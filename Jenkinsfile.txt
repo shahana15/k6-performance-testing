@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Smoke Test') {
+            steps {
+                sh 'k6 run smoke-test.js'
+            }
+        }
+        stage('Load Test') {
+            steps {
+                sh 'k6 run load-test.js'
+            }
+        }
+        stage('Stress Test') {
+            steps {
+                sh 'k6 run stress-test.js'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Performance tests completed'
+        }
+        failure {
+            echo 'Performance thresholds breached - check results'
+        }
+    }
+}
